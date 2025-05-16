@@ -7,6 +7,60 @@
     <link rel="stylesheet" href="style.css" />
   </head>
   <body>
+    <div class="page-wrapper">
+      <div class="header">Header</div>
+      <nav class="nav">
+        <span>Your Books</span>
+        <button type="submit" form="books" class="add-book">Add Book</button>
+      </nav>
+      <main class="library">
+        <form id="books" class="form">
+          <fieldset class="field">
+            <div class="form-control">
+              <label for="title">
+                <span class="title">Title:</span>
+                <input
+                  type="text"
+                  name="title"
+                  id="title"
+                  placeholder=""
+                  required
+                />
+              </label>
+            </div>
+            <div class="form-control">
+              <label for="author">
+                <span class="author">Author:</span>
+                <input
+                  type="text"
+                  name="author"
+                  id="author"
+                  placeholder=""
+                  required
+                />
+              </label>
+            </div>
+            <div class="form-control">
+              <label for="page">
+                <span class="pages">Page Count:</span>
+                <input
+                  type="text"
+                  name="pages"
+                  id="pages"
+                  placeholder=""
+                  pattern="\d"
+                />
+              </label>
+            </div>
+          </fieldset>
+        </form>
+        <div class="book">
+          <div class="title"><span>Dune</span></div>
+          <div class="author"><span>Frank Herbert</span></div>
+          <div class="pages"><span>100</span></div>
+        </div>
+      </main>
+    </div>
     <script src="script.js"></script>
   </body>
 </html>
