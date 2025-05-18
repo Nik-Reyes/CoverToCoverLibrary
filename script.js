@@ -43,38 +43,58 @@ const cleanInput = function (obj) {
   );
 };
 
+// clearing all child elements of the book container and in the same veign
+// using the myLibrary array to place them all back acts as a refresh
 function displayBooks() {
   const bookCollection = document.querySelector('.book-collection');
 
-  // get the object values
-  myLibrary.forEach((book) => {
-    const bookArr = Object.values(
-      Object.fromEntries(
-        Object.entries(book)
-          .filter(([key, value]) => key !== 'ID')
-          .map(([key, value]) => {
-            return [
-              key,
-              value === undefined || Number.isNaN(value) ? '' : value,
-            ];
-          }),
-      ),
-    );
+  // clear all child elements
+  deleteChildElements(bookCollection);
 
-    // create structure with book object
-    const bookParent = document.createElement('div');
-    bookParent.dataset.ID = book.ID;
-    const title = document.createElement('div');
-    const author = document.createElement('div');
-    const pages = document.createElement('div');
-    [title, author, pages].forEach((div, i) => {
-      const value = bookArr[i];
-      const span = document.createElement('span');
-      span.innerText = value;
-      div.className = Object.keys(book)[i];
-      div.appendChild(span);
-      bookParent.append(div);
-      bookParent.className = 'book';
-    });
+  // get the book keys (all books have the same keys)
+  const bookKeys = Object.keys(myLibrary[0]);
+
+  myLibrary.forEach((book) => {
+    // get the book values from the key value par, excluding the ID
+    const bookValues = getBookValues(book);
+
+    // create the book element with the book object keys and values
+    const bookElement = createBookElement(book, bookValues, bookKeys);
+    console.log(bookElement);
+    bookCollection.append(bookElement);
   });
 }
+
+function deleteChildElements(parent) {
+  while (parent.hasChildNodes()) {
+    parent.removeChild(parent.firstChild);
+  }
+}
+
+const getBookValues = function (book) {
+  return Object.values(
+    Object.fromEntries(
+      Object.entries(book)
+        .filter(([key, value]) => key !== 'ID')
+        .map(([key, value]) => {
+          return [key, value === undefined || Number.isNaN(value) ? '' : value];
+        }),
+    ),
+  );
+};
+
+const createBookElement = function (book, bookValues, bookKeys) {
+  const bookElement = document.createElement('div');
+  bookElement.dataset.ID = book.ID;
+  for (let i = 0; i < bookValues.length; i++) {
+    const bookChild = document.createElement('div');
+    const bookSpan = document.createElement('span');
+    const value = bookValues[i];
+    bookSpan.innerText = value;
+    bookChild.className = bookKeys[i];
+    bookChild.appendChild(bookSpan);
+    bookElement.append(bookChild);
+    bookElement.className = 'book';
+  }
+  return bookElement;
+};
