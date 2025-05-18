@@ -2,6 +2,7 @@ const myLibrary = [];
 const inputButton = document.querySelector('.add-book');
 
 inputButton.addEventListener('click', (e) => {
+  if (checkForm() === 'invalid') return;
   const bookMeta = getBookMetaObject(e);
   const cleanedBook = cleanInput(bookMeta);
   createNewBook(cleanedBook);
@@ -21,6 +22,9 @@ const getBookMetaObject = function (e) {
 
 // constructor to create book object
 const Book = function (bookMeta) {
+  if (!new.target) {
+    throw Error("Cannot use constructor without the 'new' keyword");
+  }
   this.title = bookMeta.title;
   this.author = bookMeta.author;
   this.pages = parseInt(bookMeta.pages);
