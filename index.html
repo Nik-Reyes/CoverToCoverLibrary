@@ -11,10 +11,12 @@
       <div class="header">Header</div>
       <nav class="nav">
         <span>Your Books</span>
-        <button type="submit" form="books" class="add-book">Add Book</button>
+        <button type="submit" form="book-form" class="add-book">
+          Add Book
+        </button>
       </nav>
       <main class="library">
-        <form id="books" class="form">
+        <form id="book-form" class="form">
           <fieldset class="field">
             <div class="form-control">
               <label for="title">
@@ -43,13 +45,7 @@
             <div class="form-control">
               <label for="pages">
                 <span class="pages">Page Count:</span>
-                <input
-                  type="text"
-                  name="pages"
-                  id="pages"
-                  placeholder=""
-                  pattern="\d"
-                />
+                <input type="text" name="pages" id="pages" placeholder="" />
               </label>
             </div>
           </fieldset>
