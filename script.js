@@ -3,7 +3,9 @@ const inputButton = document.querySelector('.add-book');
 
 inputButton.addEventListener('click', (e) => {
   const bookMeta = getBookMetaObject(e);
-  const newBook = createNewbook(bookMeta);
+  const cleanedBook = cleanInput(bookMeta);
+  const newBook = createNewBook(cleanedBook);
+  console.log(myLibrary);
 });
 
 // let JS look for input elements instead of manual search/query
@@ -21,14 +23,22 @@ const getBookMetaObject = function (e) {
 const Book = function (bookMeta) {
   this.title = bookMeta.title;
   this.author = bookMeta.author;
-  this.pages = bookMeta.pages;
+  this.pages = parseInt(bookMeta.pages);
   this.ID = crypto.randomUUID();
 };
 
 // uses inputs and Book contructor to create book object
-const createNewbook = function (bookMeta) {
+const createNewBook = function (bookMeta) {
   const newBook = new Book(bookMeta);
   myLibrary.push(newBook);
-  console.log(myLibrary);
   return newBook;
+};
+
+// remove whitespaces from front and back of string
+const cleanInput = function (obj) {
+  return Object.fromEntries(
+    Object.entries(obj).map(([key, value]) => {
+      return [key, value.trim()];
+    }),
+  );
 };
