@@ -4,8 +4,8 @@ const inputButton = document.querySelector('.add-book');
 inputButton.addEventListener('click', (e) => {
   const bookMeta = getBookMetaObject(e);
   const cleanedBook = cleanInput(bookMeta);
-  const newBook = createNewBook(cleanedBook);
-  console.log(myLibrary);
+  createNewBook(cleanedBook);
+  displayBooks(myLibrary);
 });
 
 // let JS look for input elements instead of manual search/query
@@ -42,3 +42,39 @@ const cleanInput = function (obj) {
     }),
   );
 };
+
+function displayBooks() {
+  const bookCollection = document.querySelector('.book-collection');
+
+  // get the object values
+  myLibrary.forEach((book) => {
+    const bookArr = Object.values(
+      Object.fromEntries(
+        Object.entries(book)
+          .filter(([key, value]) => key !== 'ID')
+          .map(([key, value]) => {
+            return [
+              key,
+              value === undefined || Number.isNaN(value) ? '' : value,
+            ];
+          }),
+      ),
+    );
+
+    // create structure with book object
+    const bookParent = document.createElement('div');
+    bookParent.dataset.ID = book.ID;
+    const title = document.createElement('div');
+    const author = document.createElement('div');
+    const pages = document.createElement('div');
+    [title, author, pages].forEach((div, i) => {
+      const value = bookArr[i];
+      const span = document.createElement('span');
+      span.innerText = value;
+      div.className = Object.keys(book)[i];
+      div.appendChild(span);
+      bookParent.append(div);
+      bookParent.className = 'book';
+    });
+  });
+}
