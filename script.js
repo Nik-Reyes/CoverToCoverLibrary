@@ -1,21 +1,21 @@
 const myLibrary = [];
-const inputButton = document.querySelector('.add-book');
+const form = document.querySelector('#book-form');
 
-inputButton.addEventListener('click', (e) => {
-  if (checkForm() === 'invalid') return;
-  const bookMeta = getBookMetaObject(e);
+form.addEventListener('submit', (e) => {
+  e.preventDefault();
+  // if (checkForm() === 'invalid') return;
+  const bookMeta = getBookMetaObject(e.target);
   const cleanedBook = cleanInput(bookMeta);
   createNewBook(cleanedBook);
   displayBooks(myLibrary);
+  e.target.reset();
 });
 
 // let JS look for input elements instead of manual search/query
-const getBookMetaObject = function (e) {
-  const form = e.target.form;
+const getBookMetaObject = function (form) {
   // FormData returns an iterable object of key value pairs (name attribute of input is the key, the input value is the value)
   const formData = new FormData(form);
 
-  form.reset();
   // Object.fromEntries transforms the iterable into an object of key value pairs
   return Object.fromEntries(formData);
 };
@@ -89,7 +89,7 @@ const getBookValues = function (book) {
 
 const createBookElement = function (book, bookValues, bookKeys) {
   const bookElement = document.createElement('div');
-  bookElement.dataset.ID = book.ID;
+  bookElement.dataset.idx = book.ID;
   for (let i = 0; i < bookValues.length; i++) {
     const bookChild = document.createElement('div');
     const bookSpan = document.createElement('span');
