@@ -1,9 +1,12 @@
-const myLibrary = [];
+const myLibrary = [
+  { title: 'Dune', author: 'Frank Herbert', pages: 694 },
+  { title: 'Neuromancer', author: 'William Gibson', pages: 277 },
+  { title: 'Hyperion', author: 'Dan Simmons', pages: 483 },
+];
 const form = document.querySelector('#book-form');
 
 form.addEventListener('submit', (e) => {
   e.preventDefault();
-  // if (checkForm() === 'invalid') return;
   const bookMeta = getBookMetaObject(e.target);
   const cleanedBook = cleanInput(bookMeta);
   createNewBook(cleanedBook);
@@ -59,7 +62,7 @@ function displayBooks() {
   const bookKeys = Object.keys(myLibrary[0]);
 
   myLibrary.forEach((book) => {
-    // get the book values from the key value par, excluding the ID
+    // get the book values from the key value pair, excluding the ID
     const bookValues = getBookValues(book);
 
     // create the book element with the book object keys and values
@@ -102,3 +105,5 @@ const createBookElement = function (book, bookValues, bookKeys) {
   }
   return bookElement;
 };
+
+displayBooks(myLibrary);
