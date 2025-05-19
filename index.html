@@ -48,13 +48,30 @@
                 <input type="text" name="pages" id="pages" placeholder="" />
               </label>
             </div>
+            <div class="form-control">
+              <label for="image">
+                <span class="image">Upload Image:</span>
+                <input
+                  type="file"
+                  name="image"
+                  id="image"
+                  accept="image/png, image/jpg, image/jpeg, image/webp"
+                  placeholder=""
+                />
+              </label>
+            </div>
           </fieldset>
         </form>
         <section class="book-collection">
           <div class="book">
-            <div class="title"><span>Dune</span></div>
-            <div class="author"><span>Frank Herbert</span></div>
-            <div class="pages"><span>100</span></div>
+            <div class="book-cover-wrapper">
+              <img src="" alt="" class="book-cover" />
+            </div>
+            <div class="book-meta">
+              <div class="title"><span></span></div>
+              <div class="author"><span></span></div>
+              <div class="pages"><span></span></div>
+            </div>
           </div>
         </section>
       </main>
