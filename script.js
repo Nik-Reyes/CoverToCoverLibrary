@@ -28,8 +28,7 @@ form.addEventListener('submit', (e) => {
   const bookMeta = getBookMetaObject(e.target);
   const cleanedBook = cleanInput(bookMeta);
   const finalBookData = processImageData(cleanedBook);
-  console.log(finalBookData);
-  // createNewBook(cleanedBook);
+  createNewBook(finalBookData);
   // displayBooks(myLibrary);
   // e.target.reset();
   // console.log('test');
@@ -74,7 +73,7 @@ function createImageReader() {
 
 function processImageData(obj) {
   if (obj.image) {
-    obj.image = imageReader.getImageData();
+    obj.image = imageReader.getImageData() || 'assets/images/defaultCover.jpg';
     return obj;
   }
 }
@@ -83,10 +82,10 @@ const Book = function (bookMeta) {
   if (!new.target) {
     throw Error("Cannot use constructor without the 'new' keyword");
   }
-  this.image = bookMeta.image;
   this.title = bookMeta.title;
   this.author = bookMeta.author;
   this.pages = parseInt(bookMeta.pages);
+  this.image = bookMeta.image;
   this.ID = crypto.randomUUID();
 };
 
@@ -96,28 +95,6 @@ const createNewBook = function (bookMeta) {
   console.log(myLibrary);
   return newBook;
 };
-
-// clearing all child elements of the book container and in the same veign
-// using the myLibrary array to place them all back acts as a refresh
-function displayBooks() {
-  // div.book-collection
-  const bookCollection = document.querySelector('.book-collection');
-
-  // clear all child elements
-  deleteChildElements(bookCollection);
-
-  // get the book keys (all books have the same keys)
-  const bookKeys = Object.keys(myLibrary[0]);
-
-  myLibrary.forEach((book) => {
-    // get the book values from the key value pair, excluding the ID
-    const bookValues = getBookValues(book);
-
-    // create the book element with the book object keys and values
-    // const bookElement = createBookElement(book, bookValues, bookKeys);
-    // bookCollection.append(bookElement);
-  });
-}
 
 function deleteChildElements(parent) {
   while (parent.hasChildNodes()) {
@@ -168,5 +145,27 @@ const createBookElement = function (book, bookValues, bookKeys) {
   }
   return bookElement;
 };
+
+// clearing all child elements of the book container and in the same veign
+// using the myLibrary array to place them all back acts as a refresh
+function displayBooks() {
+  // div.book-collection
+  const bookCollection = document.querySelector('.book-collection');
+
+  // clear all child elements
+  deleteChildElements(bookCollection);
+
+  // get the book keys (all books have the same keys)
+  const bookKeys = Object.keys(myLibrary[0]);
+
+  myLibrary.forEach((book) => {
+    // get the book values from the key value pair, excluding the ID
+    const bookValues = getBookValues(book);
+
+    // create the book element with the book object keys and values
+    // const bookElement = createBookElement(book, bookValues, bookKeys);
+    // bookCollection.append(bookElement);
+  });
+}
 
 // displayBooks(myLibrary);
