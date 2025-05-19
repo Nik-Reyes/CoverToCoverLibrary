@@ -28,7 +28,7 @@ form.addEventListener('submit', (e) => {
   const bookMeta = getBookMetaObject(e.target);
   const cleanedBook = cleanInput(bookMeta);
   const finalBookData = processImageData(cleanedBook);
-  createNewBook(finalBookData);
+  const newBook = createNewBook(finalBookData);
   // displayBooks(myLibrary);
   // e.target.reset();
   // console.log('test');
