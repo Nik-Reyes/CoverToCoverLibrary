@@ -152,7 +152,7 @@ const Book = function (bookMeta) {
   this.image = bookMeta.image;
   this.imageWidth = bookMeta.imageWidth;
   this.imageHeight = bookMeta.imageHeight;
-  this.ID = crypto.randomUUID();
+  this.ID = Date.now() + Math.floor(Math.random() * 1000);
 };
 
 const createNewBook = function (bookMeta) {
