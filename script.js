@@ -4,7 +4,9 @@ const imageReader = createImageReader();
 // make the image.width/height that of the default image in case none is uploaded
 window.addEventListener('DOMContentLoaded', () => {
   const form = document.querySelector('#book-form');
+  console.log(form);
   const imgElement = document.querySelector('#image');
+  console.log(imgElement);
 
   imgElement.addEventListener('change', imageReader.handleFileChange);
   form.addEventListener('submit', (e) => {
@@ -46,6 +48,8 @@ window.addEventListener('DOMContentLoaded', () => {
   });
   displayBooks(form);
 });
+const showFormButton = document.querySelector('.read-opt');
+console.log(showFormButton);
 
 function createImageReader() {
   let imageData = null;
@@ -192,6 +196,7 @@ const createBookElement = function (book) {
   const button = document.createElement('button');
   button.classList.add('btn', 'read-opt');
   button.innerText = 'Want to read';
+  button.addEventListener('click', handlReadOptionButton);
 
   rightColumn.append(bookMetaElement, button);
 
@@ -213,4 +218,8 @@ function displayBooks(form) {
     bookCollection.append(bookElement);
   });
   form.reset();
+}
+
+function handlReadOptionButton() {
+  console.log('hi');
 }
