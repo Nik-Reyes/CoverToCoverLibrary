@@ -150,8 +150,8 @@ const Book = function (bookMeta) {
   this.author = bookMeta.author;
   this.pages = parseInt(bookMeta.pages);
   this.image = bookMeta.image;
-  this.imageWidth = bookMeta.imageWidth;
-  this.imageHeight = bookMeta.imageHeight;
+  this.imageWidth = 420;
+  this.imageHeight = 650;
   this.ID = Date.now() + Math.floor(Math.random() * 1000);
 };
 
