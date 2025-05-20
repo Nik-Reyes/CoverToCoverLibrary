@@ -4,10 +4,9 @@ const imageReader = createImageReader();
 // make the image.width/height that of the default image in case none is uploaded
 window.addEventListener('DOMContentLoaded', () => {
   const form = document.querySelector('#book-form');
-  console.log(form);
   const imgElement = document.querySelector('#image');
-  console.log(imgElement);
-
+  const showFormButton = document.querySelector('.show-form');
+  showFormButton.addEventListener('click', showForm);
   imgElement.addEventListener('change', imageReader.handleFileChange);
   form.addEventListener('submit', (e) => {
     e.preventDefault();
@@ -16,6 +15,7 @@ window.addEventListener('DOMContentLoaded', () => {
     const finalBookData = processImageData(cleanedBook);
     const newBook = createNewBook(finalBookData);
     displayBooks(e.target);
+    e.target.classList.add('hide');
   });
 
   [
@@ -48,8 +48,6 @@ window.addEventListener('DOMContentLoaded', () => {
   });
   displayBooks(form);
 });
-const showFormButton = document.querySelector('.read-opt');
-console.log(showFormButton);
 
 function createImageReader() {
   let imageData = null;
@@ -74,6 +72,11 @@ function createImageReader() {
       return defaultImagePath;
     },
   };
+}
+
+function showForm() {
+  const form = document.querySelector('#book-form');
+  form.classList.remove('hide');
 }
 
 function processImageData(obj) {
@@ -128,18 +131,6 @@ function deleteChildElements(parent) {
     parent.removeChild(parent.firstChild);
   }
 }
-
-const getBookValues = function (book) {
-  return Object.values(
-    Object.fromEntries(
-      Object.entries(book)
-        .filter(([key, value]) => key !== 'ID')
-        .map(([key, value]) => {
-          return [key, value === undefined || Number.isNaN(value) ? '' : value];
-        }),
-    ),
-  );
-};
 
 const createBookElement = function (book) {
   // create div.book
@@ -212,12 +203,11 @@ function displayBooks(form) {
   deleteChildElements(bookCollection);
   const bookKeys = Object.keys(myLibrary[0]);
   myLibrary.forEach((book) => {
-    const bookValues = getBookValues(book);
-
-    const bookElement = createBookElement(book, bookValues, bookKeys);
+    const bookElement = createBookElement(book);
     bookCollection.append(bookElement);
   });
   form.reset();
+  console.log(form);
 }
 
 function handlReadOptionButton() {
