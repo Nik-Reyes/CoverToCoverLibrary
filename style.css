@@ -4,6 +4,12 @@
   box-sizing: border-box;
 }
 
+img {
+  display: block;
+  width: 100%;
+  height: auto;
+}
+
 .page-wrapper {
   display: grid;
   grid-template-areas:
@@ -30,7 +36,6 @@
 
 .library {
   display: grid;
-  font-size: 2rem;
   background-color: rgb(213, 234, 107);
   grid-area: library;
   grid-template-rows: auto 1fr;
@@ -40,13 +45,27 @@
   background-color: red;
 }
 
+.book-collection {
+  display: grid;
+  gap: 20px;
+}
+
 .book {
-  display: flex;
+  display: grid;
+  grid-template-columns: auto 1fr;
   width: 100%;
-  height: 100px;
   background-color: #fff;
 }
 
 .book > div {
   outline: 1px solid black;
+}
+
+.book-cover-wrapper {
+  width: 200px;
+}
+
+.book-cover {
+  object-fit: cover;
+  object-position: center;
 }
