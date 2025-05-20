@@ -111,7 +111,7 @@ const createBookElement = function (book) {
   // div.book-cover
   const bookCover = document.createElement('img');
   bookCover.className = 'book-cover';
-  bookCover.alt = 'Count Zero Book Cover';
+  bookCover.alt = `${book.title.toLowerCase()} book cover`;
   bookCover.src = book.image;
   bookCover.width = book.imageWidth;
   bookCover.height = book.imageHeight;
@@ -138,6 +138,7 @@ const createBookElement = function (book) {
   bookMetaChildPages.className = 'pages';
   const bookSpanPages = document.createElement('span');
   bookSpanPages.innerText = !book.pages ? '' : `pages ${book.pages}`;
+
   bookMetaChildPages.append(bookSpanPages);
 
   bookMetaElement.append(
