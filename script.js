@@ -78,12 +78,12 @@ function createImageReader() {
       const reader = new FileReader();
       reader.readAsDataURL(file); //encode in base 64 (string)
       // when the FileReader encodes the file, reader.onload runs
-      reader.onload = () => {
+      reader.onloadend = () => {
         imageData = reader.result;
         const img = new Image();
         img.src = imageData; // browser parses base 64 string (decodes it)
         // when its finished decoding img.onload runs
-        img.onload = () => {
+        img.onloadend = () => {
           imageWidth = img.width;
           imageHeight = img.height;
         };
@@ -176,8 +176,7 @@ const getBookValues = function (book) {
   );
 };
 
-const createBookElement = function (book, bookValues, bookKeys) {
-  // console.log(book);
+const createBookElement = function (book) {
   // create div.book
   const bookElement = document.createElement('div');
   bookElement.dataset.idx = book.ID;
@@ -186,7 +185,6 @@ const createBookElement = function (book, bookValues, bookKeys) {
   // div.book-cover-wrapper
   const bookCoverWrapper = document.createElement('div');
   bookCoverWrapper.className = 'book-cover-wrapper';
-  bookElement.append(bookCoverWrapper);
 
   // div.book-cover
   const bookCover = document.createElement('img');
@@ -198,20 +196,36 @@ const createBookElement = function (book, bookValues, bookKeys) {
   bookCoverWrapper.append(bookCover);
 
   // div.book-meta
-  const bookMeta = document.createElement('div');
+  const bookMetaElement = document.createElement('div');
+  bookMetaElement.className = 'book-meta';
 
-  // Create all meta data (title, author, pages)
-  console.log(bookValues);
-  for (let i = 0; i < bookValues.length; i++) {
-    const bookChild = document.createElement('div');
-    const bookSpan = document.createElement('span');
-    const value = bookValues[i];
-    bookSpan.innerText = value;
-    bookChild.className = bookKeys[i];
-    bookChild.appendChild(bookSpan);
-    bookElement.append(bookChild);
-    bookElement.className = 'book';
-  }
+  // meta data (title, author, pages)
+  const bookMetaChildTitle = document.createElement('div');
+  bookMetaChildTitle.className = 'title';
+  const bookSpanTitle = document.createElement('span');
+  bookSpanTitle.innerText = book.title;
+  bookMetaChildTitle.append(bookSpanTitle);
+
+  const bookMetaChildAuthor = document.createElement('div');
+  bookMetaChildAuthor.className = 'author';
+  const bookSpanAuthor = document.createElement('span');
+  bookSpanAuthor.innerText = book.author;
+  bookMetaChildAuthor.append(bookSpanAuthor);
+
+  const bookMetaChildPages = document.createElement('div');
+  bookMetaChildPages.className = 'pages';
+  const bookSpanPages = document.createElement('span');
+  bookSpanPages.innerText = book.pages;
+  bookMetaChildPages.append(bookSpanPages);
+
+  bookMetaElement.append(
+    bookMetaChildTitle,
+    bookMetaChildAuthor,
+    bookMetaChildPages,
+  );
+
+  bookElement.append(bookCoverWrapper, bookMetaElement);
+
   return bookElement;
 };
 
