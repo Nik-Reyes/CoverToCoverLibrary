@@ -1,51 +1,54 @@
-const myLibrary = [
-  {
-    image: 'assets/images/dune(penguinGalaxy).jpg',
-    title: 'Dune',
-    author: 'Frank Herbert',
-    pages: 694,
-    imageWidth: 1557,
-    imageHeight: 2495,
-  },
-  {
-    image: 'assets/images/neuromancer(penguinGalaxy).jpg',
-    title: 'Neuromancer',
-    author: 'William Gibson',
-    pages: 277,
-    imageWidth: 1571,
-    imageHeight: 2504,
-  },
-  {
-    image: 'assets/images/hyperion(delRey).jpg',
-    title: 'Hyperion',
-    author: 'Dan Simmons',
-    pages: 483,
-    imageWidth: 267,
-    imageHeight: 400,
-  },
-];
+const myLibrary = [];
 const form = document.querySelector('#book-form');
 const imgElement = document.querySelector('#image');
 const imageReader = createImageReader();
 
-// make the image.wifth/height that of the default image in case none is uploaded
+// make the image.width/height that of the default image in case none is uploaded
 window.addEventListener('DOMContentLoaded', () => {
+  imgElement.addEventListener('change', imageReader.handleFileChange);
+  form.addEventListener('submit', (e) => {
+    e.preventDefault();
+    const bookMeta = getBookMetaObject(e.target);
+    const cleanedBook = cleanInput(bookMeta);
+    const finalBookData = processImageData(cleanedBook);
+    console.log(finalBookData);
+    const newBook = createNewBook(finalBookData);
+    displayBooks();
+    e.target.reset();
+  });
+
   imageReader.loadDefaultImageData();
+  [
+    {
+      image: 'assets/images/dune(penguinGalaxy).jpg',
+      title: 'Dune',
+      author: 'Frank Herbert',
+      pages: 694,
+      imageWidth: 1557,
+      imageHeight: 2495,
+    },
+    {
+      image: 'assets/images/neuromancer(penguinGalaxy).jpg',
+      title: 'Neuromancer',
+      author: 'William Gibson',
+      pages: 277,
+      imageWidth: 1571,
+      imageHeight: 2504,
+    },
+    {
+      image: 'assets/images/hyperion(delRey).jpg',
+      title: 'Hyperion',
+      author: 'Dan Simmons',
+      pages: 483,
+      imageWidth: 267,
+      imageHeight: 400,
+    },
+  ].forEach((book) => {
+    createNewBook(book);
+  });
   displayBooks(myLibrary);
 });
-imgElement.addEventListener('change', imageReader.handleFileChange);
 
-form.addEventListener('submit', (e) => {
-  e.preventDefault();
-  const bookMeta = getBookMetaObject(e.target);
-  const cleanedBook = cleanInput(bookMeta);
-  const finalBookData = processImageData(cleanedBook);
-  const newBook = createNewBook(finalBookData);
-  displayBooks();
-  e.target.reset();
-});
-
-// let JS look for input elements instead of manual search/query
 const getBookMetaObject = function (form) {
   // FormData returns an iterable object of key value pairs (name attribute of input is the key, the input value is the value)
   const formData = new FormData(form);
