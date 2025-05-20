@@ -1,12 +1,9 @@
 const myLibrary = [];
-const imageReader = createImageReader();
 
-// make the image.width/height that of the default image in case none is uploaded
 window.addEventListener('DOMContentLoaded', () => {
   const form = document.querySelector('#book-form');
   const imgElement = document.querySelector('#image');
 
-  imgElement.addEventListener('change', imageReader.handleFileChange);
   form.addEventListener('submit', (e) => {
     e.preventDefault();
     const bookMeta = getBookMetaObject(e.target);
@@ -16,32 +13,30 @@ window.addEventListener('DOMContentLoaded', () => {
     displayBooks(e.target);
   });
 
-  imageReader.loadDefaultImageData();
-
   [
     {
       image: 'assets/images/dune(penguinGalaxy).jpg',
       title: 'Dune',
       author: 'Frank Herbert',
       pages: 694,
-      imageWidth: 1557,
-      imageHeight: 2495,
+      imageWidth: 420,
+      imageHeight: 650,
     },
     {
       image: 'assets/images/neuromancer(penguinGalaxy).jpg',
       title: 'Neuromancer',
       author: 'William Gibson',
       pages: 277,
-      imageWidth: 1571,
-      imageHeight: 2504,
+      imageWidth: 420,
+      imageHeight: 650,
     },
     {
       image: 'assets/images/hyperion(delRey).jpg',
       title: 'Hyperion',
       author: 'Dan Simmons',
       pages: 483,
-      imageWidth: 267,
-      imageHeight: 400,
+      imageWidth: 420,
+      imageHeight: 650,
     },
   ].forEach((book) => {
     createNewBook(book);
@@ -66,92 +61,16 @@ const cleanInput = function (obj) {
   );
 };
 
-function createImageReader() {
-  let imageData = null;
-  let imageWidth = 0;
-  let imageHeight = 0;
-  const defaultImagePath = 'assets/images/defaultCover.jpg';
-  let loadDefaultImage = false;
-
-  return {
-    handleFileChange: function (e) {
-      const file = e.target.files[0];
-      if (file.type.startsWith('image/') === false) return;
-
-      const reader = new FileReader();
-      reader.readAsDataURL(file); //encode in base 64 (string)
-      // when the FileReader encodes the file, reader.onload runs
-      reader.onloadend = () => {
-        imageData = reader.result;
-        const img = new Image();
-        img.src = imageData; // browser parses base 64 string (decodes it)
-        // when its finished decoding img.onload runs
-        img.onloadend = () => {
-          imageWidth = img.width;
-          imageHeight = img.height;
-        };
-      };
-    },
-
-    loadDefaultImageData: function () {
-      if (loadDefaultImage) return;
-      loadDefaultImage = true;
-
-      const defaultImage = new Image();
-      defaultImage.src = defaultImagePath; // browser makes HTTP request to fetch the image
-      // when the image is fetched and decoded, onload runs
-      defaultImage.onload = () => {
-        // make sure no image was uploaded
-        if (!imageData) {
-          imageWidth = defaultImage.width;
-          imageHeight = defaultImage.height;
-        }
-        loadDefaultImage = false;
-      };
-    },
-
-    getImageData: function () {
-      return imageData;
-    },
-    getImageWidth: function () {
-      return imageWidth;
-    },
-    getImageHeight: function () {
-      return imageHeight;
-    },
-
-    getDefaultImagePath: function () {
-      return defaultImagePath;
-    },
-  };
-}
-
-function processImageData(obj) {
-  if (obj.image) {
-    if (imageReader.getImageData()) {
-      obj.image = imageReader.getImageData();
-      obj.imageWidth = imageReader.getImageWidth();
-      obj.imageHeight = imageReader.getImageHeight();
-    } else if (imageReader.getDefaultImagePath()) {
-      obj.image = imageReader.getDefaultImagePath();
-      imageReader.loadDefaultImageData(); // assures that the defualt width/height is loaded (user uploads --> cancels: make sure we have the default width height)
-      obj.imageWidth = imageReader.getImageWidth();
-      obj.imageHeight = imageReader.getImageHeight();
-    }
-    return obj;
-  }
-}
-
 const Book = function (bookMeta) {
   if (!new.target) {
     throw Error("Cannot use constructor without the 'new' keyword");
   }
   this.title = bookMeta.title;
   this.author = bookMeta.author;
-  this.pages = parseInt(bookMeta.pages);
+  this.pages = parseInt(bookMeta.pages) || '';
   this.image = bookMeta.image;
-  this.imageWidth = 420;
-  this.imageHeight = 650;
+  this.imageWidth = bookMeta.width || 420;
+  this.imageHeight = bookMeta.height || 650;
   this.ID = Date.now() + Math.floor(Math.random() * 1000);
 };
 
@@ -212,13 +131,13 @@ const createBookElement = function (book) {
   const bookMetaChildAuthor = document.createElement('div');
   bookMetaChildAuthor.className = 'author';
   const bookSpanAuthor = document.createElement('span');
-  bookSpanAuthor.innerText = book.author;
+  bookSpanAuthor.innerText = `by ${book.author}`;
   bookMetaChildAuthor.append(bookSpanAuthor);
 
   const bookMetaChildPages = document.createElement('div');
   bookMetaChildPages.className = 'pages';
   const bookSpanPages = document.createElement('span');
-  bookSpanPages.innerText = book.pages;
+  bookSpanPages.innerText = !book.pages ? '' : `pages ${book.pages}`;
   bookMetaChildPages.append(bookSpanPages);
 
   bookMetaElement.append(
