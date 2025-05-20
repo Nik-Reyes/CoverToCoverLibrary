@@ -156,6 +156,9 @@ const createBookElement = function (book) {
   bookCover.height = book.imageHeight;
   bookCoverWrapper.append(bookCover);
 
+  const rightColumn = document.createElement('div');
+  rightColumn.className = 'right-column';
+
   // div.book-meta
   const bookMetaElement = document.createElement('div');
   bookMetaElement.className = 'book-meta';
@@ -186,7 +189,13 @@ const createBookElement = function (book) {
     bookMetaChildPages,
   );
 
-  bookElement.append(bookCoverWrapper, bookMetaElement);
+  const button = document.createElement('button');
+  button.classList.add('btn', 'read-opt');
+  button.innerText = 'Want to read';
+
+  rightColumn.append(bookMetaElement, button);
+
+  bookElement.append(bookCoverWrapper, rightColumn);
 
   return bookElement;
 };
