@@ -1,23 +1,23 @@
 const myLibrary = [];
-const form = document.querySelector('#book-form');
-const imgElement = document.querySelector('#image');
 const imageReader = createImageReader();
 
 // make the image.width/height that of the default image in case none is uploaded
 window.addEventListener('DOMContentLoaded', () => {
+  const form = document.querySelector('#book-form');
+  const imgElement = document.querySelector('#image');
+
   imgElement.addEventListener('change', imageReader.handleFileChange);
   form.addEventListener('submit', (e) => {
     e.preventDefault();
     const bookMeta = getBookMetaObject(e.target);
     const cleanedBook = cleanInput(bookMeta);
     const finalBookData = processImageData(cleanedBook);
-    console.log(finalBookData);
     const newBook = createNewBook(finalBookData);
-    displayBooks();
-    e.target.reset();
+    displayBooks(e.target);
   });
 
   imageReader.loadDefaultImageData();
+
   [
     {
       image: 'assets/images/dune(penguinGalaxy).jpg',
@@ -46,7 +46,7 @@ window.addEventListener('DOMContentLoaded', () => {
   ].forEach((book) => {
     createNewBook(book);
   });
-  displayBooks(myLibrary);
+  displayBooks(form);
 });
 
 const getBookMetaObject = function (form) {
@@ -234,7 +234,7 @@ const createBookElement = function (book) {
 
 // clearing all child elements of the book container and in the same veign
 // use the myLibrary array to place them all back, forcing a refresh
-function displayBooks() {
+function displayBooks(form) {
   const bookCollection = document.querySelector('.book-collection');
   deleteChildElements(bookCollection);
   const bookKeys = Object.keys(myLibrary[0]);
@@ -244,4 +244,5 @@ function displayBooks() {
     const bookElement = createBookElement(book, bookValues, bookKeys);
     bookCollection.append(bookElement);
   });
+  form.reset();
 }
