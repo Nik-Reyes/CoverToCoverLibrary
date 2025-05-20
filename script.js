@@ -1,5 +1,5 @@
 const myLibrary = [];
-const imageReader = createImageReader();
+const imageHandler = createImageHandler();
 
 // make the image.width/height that of the default image in case none is uploaded
 window.addEventListener('DOMContentLoaded', () => {
@@ -7,15 +7,15 @@ window.addEventListener('DOMContentLoaded', () => {
   const imgElement = document.querySelector('#image');
   const showFormButton = document.querySelector('.show-form');
   showFormButton.addEventListener('click', showForm);
-  imgElement.addEventListener('change', imageReader.handleFileChange);
+  imgElement.addEventListener('change', imageHandler.handleFileChange);
   form.addEventListener('submit', (e) => {
     e.preventDefault();
     const bookMeta = getBookMetaObject(e.target);
     const cleanedBook = cleanInput(bookMeta);
     const finalBookData = processImageData(cleanedBook);
     const newBook = createNewBook(finalBookData);
-    displayBooks(e.target);
-    e.target.classList.add('hide');
+    displayBooks();
+    reset(e.target);
   });
 
   [
@@ -49,7 +49,7 @@ window.addEventListener('DOMContentLoaded', () => {
   displayBooks(form);
 });
 
-function createImageReader() {
+function createImageHandler() {
   let imageData = null;
   const defaultImagePath = 'assets/images/defaultCover.jpg';
 
@@ -71,6 +71,9 @@ function createImageReader() {
     getDefaultImagePath: function () {
       return defaultImagePath;
     },
+    resetImgData: function () {
+      imageData = null;
+    },
   };
 }
 
@@ -81,10 +84,10 @@ function showForm() {
 
 function processImageData(obj) {
   if (obj.image) {
-    if (imageReader.getImageData()) {
-      obj.image = imageReader.getImageData();
-    } else if (imageReader.getDefaultImagePath()) {
-      obj.image = imageReader.getDefaultImagePath();
+    if (imageHandler.getImageData()) {
+      obj.image = imageHandler.getImageData();
+    } else if (imageHandler.getDefaultImagePath()) {
+      obj.image = imageHandler.getDefaultImagePath();
     }
     return obj;
   }
@@ -206,10 +209,14 @@ function displayBooks(form) {
     const bookElement = createBookElement(book);
     bookCollection.append(bookElement);
   });
-  form.reset();
-  console.log(form);
 }
 
 function handlReadOptionButton() {
   console.log('hi');
+}
+
+function reset(form) {
+  if (imageHandler.getImageData()) imageHandler.resetImgData();
+  form.reset();
+  form.classList.add('hide');
 }
