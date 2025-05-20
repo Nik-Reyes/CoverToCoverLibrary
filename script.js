@@ -1,9 +1,12 @@
 const myLibrary = [];
+const imageReader = createImageReader();
 
+// make the image.width/height that of the default image in case none is uploaded
 window.addEventListener('DOMContentLoaded', () => {
   const form = document.querySelector('#book-form');
   const imgElement = document.querySelector('#image');
 
+  imgElement.addEventListener('change', imageReader.handleFileChange);
   form.addEventListener('submit', (e) => {
     e.preventDefault();
     const bookMeta = getBookMetaObject(e.target);
@@ -16,7 +19,7 @@ window.addEventListener('DOMContentLoaded', () => {
   [
     {
       image: 'assets/images/dune(penguinGalaxy).jpg',
-      title: 'Dune',
+      title: 'Dune (Penguin Galaxy Edition)',
       author: 'Frank Herbert',
       pages: 694,
       imageWidth: 420,
@@ -24,7 +27,7 @@ window.addEventListener('DOMContentLoaded', () => {
     },
     {
       image: 'assets/images/neuromancer(penguinGalaxy).jpg',
-      title: 'Neuromancer',
+      title: 'Neuromancer (Penguin Galaxy Edition)',
       author: 'William Gibson',
       pages: 277,
       imageWidth: 420,
@@ -43,6 +46,42 @@ window.addEventListener('DOMContentLoaded', () => {
   });
   displayBooks(form);
 });
+
+function createImageReader() {
+  let imageData = null;
+  const defaultImagePath = 'assets/images/defaultCover.jpg';
+
+  return {
+    handleFileChange: function (e) {
+      const file = e.target.files[0];
+      if (file.type.startsWith('image/') === false) return;
+
+      const reader = new FileReader();
+      reader.readAsDataURL(file); //encode in base 64 (string)
+      // when the FileReader encodes the file, reader.onload runs
+      reader.onloadend = () => {
+        imageData = reader.result;
+      };
+    },
+    getImageData: function () {
+      return imageData;
+    },
+    getDefaultImagePath: function () {
+      return defaultImagePath;
+    },
+  };
+}
+
+function processImageData(obj) {
+  if (obj.image) {
+    if (imageReader.getImageData()) {
+      obj.image = imageReader.getImageData();
+    } else if (imageReader.getDefaultImagePath()) {
+      obj.image = imageReader.getDefaultImagePath();
+    }
+    return obj;
+  }
+}
 
 const getBookMetaObject = function (form) {
   // FormData returns an iterable object of key value pairs (name attribute of input is the key, the input value is the value)
