@@ -182,7 +182,7 @@ const getBookValues = function (book) {
 const createBookElement = function (book) {
   // create div.book
   const bookElement = document.createElement('div');
-  bookElement.dataset.idx = book.ID;
+  bookElement.dataset.id = book.ID;
   bookElement.className = 'book';
 
   // div.book-cover-wrapper
