@@ -13,56 +13,56 @@
         <span>Your Books</span>
         <button class="show-form">Add Book</button>
       </nav>
+      <form action="https://example.com" id="book-form" class="form hide">
+        <fieldset class="field">
+          <div class="form-control">
+            <label for="title">
+              <span class="title">Title:</span>
+              <input
+                type="text"
+                name="title"
+                id="title"
+                placeholder=""
+                required
+              />
+            </label>
+          </div>
+          <div class="form-control">
+            <label for="author">
+              <span class="author">Author:</span>
+              <input
+                type="text"
+                name="author"
+                id="author"
+                placeholder=""
+                required
+              />
+            </label>
+          </div>
+          <div class="form-control">
+            <label for="pages">
+              <span class="pages">Page Count:</span>
+              <input type="text" name="pages" id="pages" placeholder="" />
+            </label>
+          </div>
+          <div class="form-control">
+            <label for="image">
+              <span class="image">Upload Image:</span>
+              <input
+                type="file"
+                name="image"
+                id="image"
+                accept="image/png, image/jpg, image/jpeg, image/webp"
+                placeholder=""
+              />
+            </label>
+          </div>
+          <button type="submit" form="book-form" class="add-book">
+            Add Book
+          </button>
+        </fieldset>
+      </form>
       <main class="library">
-        <form action="https://example.com" id="book-form" class="form hide">
-          <fieldset class="field">
-            <div class="form-control">
-              <label for="title">
-                <span class="title">Title:</span>
-                <input
-                  type="text"
-                  name="title"
-                  id="title"
-                  placeholder=""
-                  required
-                />
-              </label>
-            </div>
-            <div class="form-control">
-              <label for="author">
-                <span class="author">Author:</span>
-                <input
-                  type="text"
-                  name="author"
-                  id="author"
-                  placeholder=""
-                  required
-                />
-              </label>
-            </div>
-            <div class="form-control">
-              <label for="pages">
-                <span class="pages">Page Count:</span>
-                <input type="text" name="pages" id="pages" placeholder="" />
-              </label>
-            </div>
-            <div class="form-control">
-              <label for="image">
-                <span class="image">Upload Image:</span>
-                <input
-                  type="file"
-                  name="image"
-                  id="image"
-                  accept="image/png, image/jpg, image/jpeg, image/webp"
-                  placeholder=""
-                />
-              </label>
-            </div>
-            <button type="submit" form="book-form" class="add-book">
-              Add Book
-            </button>
-          </fieldset>
-        </form>
         <section class="book-collection"></section>
       </main>
     </div>

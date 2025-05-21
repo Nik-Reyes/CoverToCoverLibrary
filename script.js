@@ -90,6 +90,19 @@ window.addEventListener('DOMContentLoaded', () => {
       shelfMenu.style.display = 'none';
     }
   });
+
+  document.addEventListener('click', (e) => {
+    if (e.target.closest('.delete-button img')) {
+      const deleteButton = e.target.closest('.delete-button img');
+      const currentBookID = parseInt(deleteButton.offsetParent.dataset.id);
+      myLibrary.forEach((book, i, arr) => {
+        if (currentBookID === book.ID) {
+          arr.splice(i, 1);
+          deleteButton.offsetParent.remove();
+        }
+      });
+    }
+  });
 });
 
 function createImageHandler() {
@@ -187,10 +200,15 @@ const createBookElement = function (book) {
   const bookMetaElement = createBookMetaElement(book);
   const bookButton = createBookReadStateButton(book);
   const editButton = createEditButton(book);
+  const deleteButton = createDeleteButton();
+
+  const buttonRow = document.createElement('div');
+  buttonRow.className = 'book-button-row';
+  buttonRow.append(bookButton, deleteButton);
 
   const rightColumn = document.createElement('div');
   rightColumn.className = 'right-column';
-  rightColumn.append(bookMetaElement, bookButton);
+  rightColumn.append(bookMetaElement, buttonRow);
 
   bookElement.append(bookCoverWrapper, rightColumn, editButton);
   return bookElement;
@@ -277,6 +295,18 @@ const createBookReadStateButton = function () {
   button.appendChild(buttonMenu);
 
   return button;
+};
+
+const createDeleteButton = function () {
+  const deleteButton = document.createElement('button');
+  deleteButton.className = 'delete-button';
+  const deleteButtonImg = document.createElement('img');
+  deleteButtonImg.src = 'assets/svgs/delete.svg';
+  deleteButtonImg.alt = 'delete button';
+  deleteButtonImg.width = deleteButtonImg.naturalWidth;
+  deleteButtonImg.height = deleteButtonImg.naturalHeight;
+  deleteButton.appendChild(deleteButtonImg);
+  return deleteButton;
 };
 
 // clearing all child elements to refresh cards
