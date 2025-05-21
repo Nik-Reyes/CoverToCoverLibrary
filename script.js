@@ -50,7 +50,6 @@ window.addEventListener('DOMContentLoaded', () => {
   displayBooks(form);
 
   const bookCollection = document.querySelector('.book-collection');
-
   bookCollection.addEventListener('click', (e) => {
     const button = e.target.closest('.btn.read-opt');
     if (button && bookCollection.contains(button)) {
@@ -97,7 +96,7 @@ function showForm() {
 }
 
 function processImageData(obj) {
-  if (!obj.image) {
+  if (!imageHandler.getImageData()) {
     obj.image = imageHandler.getDefaultImagePath();
     return obj;
   }
@@ -212,7 +211,7 @@ const createBookMetaElement = function (book) {
 };
 
 const createBookReadStateButton = function () {
-  const button = document.createElement('button');
+  const button = document.createElement('div');
   button.classList.add('btn', 'read-opt');
 
   const buttonSpan = document.createElement('span');
