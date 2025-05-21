@@ -49,15 +49,45 @@ window.addEventListener('DOMContentLoaded', () => {
 
   displayBooks(form);
 
-  const bookCollection = document.querySelector('.book-collection');
-  bookCollection.addEventListener('click', (e) => {
-    const button = e.target.closest('.btn.read-opt');
-    if (button && bookCollection.contains(button)) {
-      const currentShelfMenu = button.querySelector('.shelf-menu');
-      if (currentShelfMenu) {
-        currentShelfMenu.style.display =
-          currentShelfMenu.style.display === 'none' ? 'grid' : 'none';
+  let previousButton = '';
+  document.addEventListener('click', (e) => {
+    const clickedButton = e.target.closest('.btn.read-opt');
+    const shelfMenus = document.querySelectorAll('.shelf-menu');
+
+    // close all shelf menus
+    shelfMenus.forEach((shelfMenu) => {
+      if (shelfMenu && shelfMenu.style.display !== 'none') {
+        shelfMenu.style.display = 'none';
       }
+    });
+
+    // open the clicked shelf menu
+    if (
+      clickedButton &&
+      clickedButton.closest('.book').dataset.id !== previousButton
+    ) {
+      e.stopPropagation();
+      previousButton = clickedButton.closest('.book').dataset.id;
+      const shelf = clickedButton.querySelector('.shelf-menu');
+      if (shelf.style.display !== 'none') {
+        shelf.style.display = 'none';
+      } else {
+        shelf.style.display = 'grid';
+      }
+    } else {
+      if (previousButton) previousButton = '';
+    }
+  });
+
+  document.addEventListener('click', (e) => {
+    const shelfButton = e.target.closest('.read, .w-t-r, .current-read');
+    if (shelfButton) {
+      e.stopPropagation();
+      const parentButton = shelfButton.closest('.btn.read-opt');
+      const parentButtonText = parentButton.querySelector('.button-text');
+      parentButtonText.innerText = shelfButton.innerText;
+      const shelfMenu = shelfButton.closest('.shelf-menu');
+      shelfMenu.style.display = 'none';
     }
   });
 });
@@ -243,15 +273,6 @@ const createBookReadStateButton = function () {
   currentReadShelf.className = 'current-read';
   currentReadShelf.innerText = 'Currently reading';
 
-  buttonMenu.addEventListener('click', (e) => {
-    e.stopPropagation();
-    const shelfButton = e.target.closest('.read, .w-t-r, .current-read');
-    if (shelfButton) {
-      const buttonText = e.target.closest('.btn').querySelector('.button-text');
-      buttonText.innerText = shelfButton.innerText;
-      buttonMenu.style.display = 'none';
-    }
-  });
   buttonMenu.append(readShelf, wantToReadShelf, currentReadShelf);
   button.appendChild(buttonMenu);
 
