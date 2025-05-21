@@ -46,7 +46,21 @@ window.addEventListener('DOMContentLoaded', () => {
   ].forEach((book) => {
     createNewBook(book);
   });
+
   displayBooks(form);
+
+  const bookCollection = document.querySelector('.book-collection');
+
+  bookCollection.addEventListener('click', (e) => {
+    const button = e.target.closest('.btn.read-opt');
+    if (button && bookCollection.contains(button)) {
+      const currentShelfMenu = button.querySelector('.shelf-menu');
+      if (currentShelfMenu) {
+        currentShelfMenu.style.display =
+          currentShelfMenu.style.display === 'none' ? 'grid' : 'none';
+      }
+    }
+  });
 });
 
 function createImageHandler() {
@@ -152,7 +166,7 @@ const createBookElement = function (book) {
   bookCover.src = book.image;
   bookCover.width = book.imageWidth;
   bookCover.height = book.imageHeight;
-  bookCoverWrapper.append(bookCover);
+  bookCoverWrapper.appendChild(bookCover);
 
   const rightColumn = document.createElement('div');
   rightColumn.className = 'right-column';
@@ -166,20 +180,19 @@ const createBookElement = function (book) {
   bookMetaChildTitle.className = 'title';
   const bookSpanTitle = document.createElement('span');
   bookSpanTitle.innerText = book.title;
-  bookMetaChildTitle.append(bookSpanTitle);
+  bookMetaChildTitle.appendChild(bookSpanTitle);
 
   const bookMetaChildAuthor = document.createElement('div');
   bookMetaChildAuthor.className = 'author';
   const bookSpanAuthor = document.createElement('span');
   bookSpanAuthor.innerText = `by ${book.author}`;
-  bookMetaChildAuthor.append(bookSpanAuthor);
+  bookMetaChildAuthor.appendChild(bookSpanAuthor);
 
   const bookMetaChildPages = document.createElement('div');
   bookMetaChildPages.className = 'pages';
   const bookSpanPages = document.createElement('span');
   bookSpanPages.innerText = !book.pages ? '' : `pages ${book.pages}`;
-
-  bookMetaChildPages.append(bookSpanPages);
+  bookMetaChildPages.appendChild(bookSpanPages);
 
   bookMetaElement.append(
     bookMetaChildTitle,
@@ -189,13 +202,41 @@ const createBookElement = function (book) {
 
   const button = document.createElement('button');
   button.classList.add('btn', 'read-opt');
-  button.innerText = 'Want to read';
-  button.addEventListener('click', handlReadOptionButton);
 
+  const buttonSpan = document.createElement('span');
+  buttonSpan.className = 'button-text';
+  buttonSpan.innerText = book.readingStatus || 'Want to read';
+  button.appendChild(buttonSpan);
+
+  const buttonMenu = document.createElement('div');
+  buttonMenu.className = 'shelf-menu';
+  buttonMenu.style.display = 'none';
+
+  const readShelf = document.createElement('button');
+  readShelf.className = 'read';
+  readShelf.innerText = 'Read';
+  const wantToReadShelf = document.createElement('button');
+  wantToReadShelf.className = 'w-t-r';
+  wantToReadShelf.innerText = 'Want to read';
+  const currentReadShelf = document.createElement('button');
+  currentReadShelf.className = 'current-read';
+  currentReadShelf.innerText = 'Currently reading';
+
+  buttonMenu.addEventListener('click', (e) => {
+    e.stopPropagation();
+    if (e.target.closest('.btn')) {
+      const currentButtonText = e.target
+        .closest('.btn')
+        .querySelector('.button-text');
+      currentButtonText.innerText = e.target.innerText;
+      buttonMenu.style.display = 'none';
+    }
+  });
+
+  buttonMenu.append(readShelf, wantToReadShelf, currentReadShelf);
+  button.appendChild(buttonMenu);
   rightColumn.append(bookMetaElement, button);
-
   bookElement.append(bookCoverWrapper, rightColumn);
-
   return bookElement;
 };
 
@@ -204,15 +245,14 @@ const createBookElement = function (book) {
 function displayBooks(form) {
   const bookCollection = document.querySelector('.book-collection');
   deleteChildElements(bookCollection);
-  const bookKeys = Object.keys(myLibrary[0]);
   myLibrary.forEach((book) => {
     const bookElement = createBookElement(book);
-    bookCollection.append(bookElement);
+    bookCollection.appendChild(bookElement);
+    console.log(
+      'How many shelf-menu elements:',
+      document.querySelectorAll('.shelf-menu').length,
+    );
   });
-}
-
-function handlReadOptionButton() {
-  console.log('hi');
 }
 
 function reset(form) {
