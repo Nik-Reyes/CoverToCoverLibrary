@@ -97,14 +97,14 @@ function showForm() {
 }
 
 function processImageData(obj) {
-  if (obj.image) {
-    if (imageHandler.getImageData()) {
-      obj.image = imageHandler.getImageData();
-    } else if (imageHandler.getDefaultImagePath()) {
-      obj.image = imageHandler.getDefaultImagePath();
-    }
+  if (!obj.image) {
+    obj.image = imageHandler.getDefaultImagePath();
     return obj;
   }
+  if (imageHandler.getImageData()) {
+    obj.image = imageHandler.getImageData();
+  }
+  return obj;
 }
 
 const getBookMetaObject = function (form) {
@@ -132,8 +132,8 @@ const Book = function (bookMeta) {
   this.author = bookMeta.author;
   this.pages = parseInt(bookMeta.pages) || '';
   this.image = bookMeta.image;
-  this.imageWidth = bookMeta.width || 420;
-  this.imageHeight = bookMeta.height || 650;
+  this.imageWidth = bookMeta.imageWidth || 420;
+  this.imageHeight = bookMeta.imageHeight || 650;
   this.ID = Date.now() + Math.floor(Math.random() * 1000);
 };
 
@@ -150,16 +150,26 @@ function deleteChildElements(parent) {
 }
 
 const createBookElement = function (book) {
-  // create div.book
   const bookElement = document.createElement('div');
   bookElement.dataset.id = book.ID;
   bookElement.className = 'book';
 
-  // div.book-cover-wrapper
+  const bookCoverWrapper = createBookCover(book);
+  const bookMetaElement = createBookMetaElement(book);
+  const bookButton = createBookReadStateButton(book);
+
+  const rightColumn = document.createElement('div');
+  rightColumn.className = 'right-column';
+  rightColumn.append(bookMetaElement, bookButton);
+
+  bookElement.append(bookCoverWrapper, rightColumn);
+  return bookElement;
+};
+
+const createBookCover = function (book) {
   const bookCoverWrapper = document.createElement('div');
   bookCoverWrapper.className = 'book-cover-wrapper';
 
-  // div.book-cover
   const bookCover = document.createElement('img');
   bookCover.className = 'book-cover';
   bookCover.alt = `${book.title.toLowerCase()} book cover`;
@@ -167,15 +177,13 @@ const createBookElement = function (book) {
   bookCover.width = book.imageWidth;
   bookCover.height = book.imageHeight;
   bookCoverWrapper.appendChild(bookCover);
+  return bookCoverWrapper;
+};
 
-  const rightColumn = document.createElement('div');
-  rightColumn.className = 'right-column';
-
-  // div.book-meta
+const createBookMetaElement = function (book) {
   const bookMetaElement = document.createElement('div');
   bookMetaElement.className = 'book-meta';
 
-  // meta data (title, author, pages)
   const bookMetaChildTitle = document.createElement('div');
   bookMetaChildTitle.className = 'title';
   const bookSpanTitle = document.createElement('span');
@@ -200,12 +208,16 @@ const createBookElement = function (book) {
     bookMetaChildPages,
   );
 
+  return bookMetaElement;
+};
+
+const createBookReadStateButton = function () {
   const button = document.createElement('button');
   button.classList.add('btn', 'read-opt');
 
   const buttonSpan = document.createElement('span');
   buttonSpan.className = 'button-text';
-  buttonSpan.innerText = book.readingStatus || 'Want to read';
+  buttonSpan.innerText = 'Want to read';
   button.appendChild(buttonSpan);
 
   const buttonMenu = document.createElement('div');
@@ -224,34 +236,26 @@ const createBookElement = function (book) {
 
   buttonMenu.addEventListener('click', (e) => {
     e.stopPropagation();
-    if (e.target.closest('.btn')) {
-      const currentButtonText = e.target
-        .closest('.btn')
-        .querySelector('.button-text');
-      currentButtonText.innerText = e.target.innerText;
+    const shelfButton = e.target.closest('.read, .w-t-r, .current-read');
+    if (shelfButton) {
+      const buttonText = e.target.closest('.btn').querySelector('.button-text');
+      buttonText.innerText = shelfButton.innerText;
       buttonMenu.style.display = 'none';
     }
   });
-
   buttonMenu.append(readShelf, wantToReadShelf, currentReadShelf);
   button.appendChild(buttonMenu);
-  rightColumn.append(bookMetaElement, button);
-  bookElement.append(bookCoverWrapper, rightColumn);
-  return bookElement;
+
+  return button;
 };
 
-// clearing all child elements of the book container and in the same veign
-// use the myLibrary array to place them all back, forcing a refresh
-function displayBooks(form) {
+// clearing all child elements to refresh cards
+function displayBooks() {
   const bookCollection = document.querySelector('.book-collection');
   deleteChildElements(bookCollection);
   myLibrary.forEach((book) => {
     const bookElement = createBookElement(book);
     bookCollection.appendChild(bookElement);
-    console.log(
-      'How many shelf-menu elements:',
-      document.querySelectorAll('.shelf-menu').length,
-    );
   });
 }
 
