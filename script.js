@@ -156,13 +156,23 @@ const createBookElement = function (book) {
   const bookCoverWrapper = createBookCover(book);
   const bookMetaElement = createBookMetaElement(book);
   const bookButton = createBookReadStateButton(book);
+  const editButton = createEditButton(book);
 
   const rightColumn = document.createElement('div');
   rightColumn.className = 'right-column';
   rightColumn.append(bookMetaElement, bookButton);
 
-  bookElement.append(bookCoverWrapper, rightColumn);
+  bookElement.append(bookCoverWrapper, rightColumn, editButton);
   return bookElement;
+};
+
+const createEditButton = function () {
+  const editButton = document.createElement('button');
+  editButton.className = 'book-edit';
+  const editButtonSpan = document.createElement('span');
+  editButtonSpan.innerText = 'Edit';
+  editButton.appendChild(editButtonSpan);
+  return editButton;
 };
 
 const createBookCover = function (book) {
