@@ -83,11 +83,16 @@ span {
   background-color: rgb(235, 235, 235);
 }
 
+.book-cover-wrapper {
+  min-height: 140px;
+  display: grid;
+  place-content: center;
+}
+
 .book-cover {
   object-fit: cover;
   object-position: center;
   border-radius: 0.8rem;
-  height: 100%;
 }
 
 .title > span {
@@ -115,6 +120,12 @@ label > span {
   padding: 0.2rem 0;
   border-radius: 0.6rem;
   cursor: pointer;
+  text-align: center;
+}
+
+.btn,
+.shelf-menu {
+  font-size: 0.8125rem;
 }
 
 .read-opt {
@@ -137,6 +148,7 @@ label > span {
   border: none;
   text-align: left;
   padding: 0.25em 0.75em;
+  text-align: center;
 }
 
 .shelf-menu > button:first-child {
