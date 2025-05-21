@@ -86,8 +86,10 @@ span {
   position: relative;
 }
 
-.book:hover .book-edit {
-  display: block;
+@media screen and (min-width: 62rem) {
+  .book:hover .book-edit {
+    display: block;
+  }
 }
 
 .book-edit {
@@ -154,8 +156,9 @@ label > span {
 }
 
 .btn,
-.shelf-menu {
+.shelf-menu > button {
   font-size: 0.8125rem;
+  color: black;
 }
 
 .shelf-menu {
