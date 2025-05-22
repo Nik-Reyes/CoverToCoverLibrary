@@ -94,14 +94,13 @@ window.addEventListener('DOMContentLoaded', () => {
 
   document.addEventListener('click', (e) => {
     if (e.target.closest('.delete-button img')) {
-      const deleteButton = e.target.closest('.delete-button img');
-      const currentBookID = parseInt(deleteButton.offsetParent.dataset.id);
-      myLibrary.forEach((book, i, arr) => {
-        if (currentBookID === book.ID) {
-          arr.splice(i, 1);
-          deleteButton.offsetParent.remove();
-        }
-      });
+      const currentBook = e.target.closest('.book');
+      const currentBookID = parseInt(currentBook.dataset.id);
+      const idx = myLibrary.findIndex((book) => book.ID === currentBookID);
+      if (idx !== -1) {
+        myLibrary.splice(idx, 1);
+        currentBook.remove();
+      }
     }
   });
 });
