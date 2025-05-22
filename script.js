@@ -83,10 +83,16 @@ window.addEventListener('DOMContentLoaded', () => {
   document.addEventListener('click', (e) => {
     e.stopPropagation();
     if (e.target.closest('.read, .w-t-r, .current-read')) {
-      if (bookExists(e.target.closest('.book')).result) {
+      const currentBook = e.target.closest('.book');
+      const bookCheck = bookExists(currentBook);
+      if (bookCheck.result) {
+        console.log('hi');
+
+        const newState = e.target.innerText;
+        myLibrary[bookCheck.bookIndex].setReadState(newState);
         const parentButton = e.target.closest('.btn.read-state');
-        const parentButtonText = parentButton.querySelector('.button-text');
-        parentButtonText.innerText = e.target.innerText;
+        const previousState = parentButton.querySelector('.button-text');
+        previousState.innerText = newState;
         const shelfMenu = e.target.closest('.shelf-menu');
         shelfMenu.style.display = 'none';
       }
@@ -122,6 +128,7 @@ function createImageHandler() {
   let imageURL = null;
   let fileValidity = false;
   const defaultImagePath = 'assets/images/defaultCover.jpg';
+  const validfFileTypes = ['jpg', 'jpeg', 'webp', 'png'];
 
   return {
     handleFileChange: function (e) {
@@ -170,7 +177,6 @@ function createImageHandler() {
       return fileValidity;
     },
     setFileValidity: function (file) {
-      const validfFileTypes = ['jpg', 'jpeg', 'webp', 'png'];
       const fileType = file.type;
       if (validfFileTypes.some((type) => fileType.endsWith(type))) {
         fileValidity = true;
@@ -237,8 +243,18 @@ const Book = function (bookMeta) {
   this.ID = Date.now() + Math.floor(Math.random() * 1000);
 };
 
+Book.prototype.setReadState = function (newState) {
+  console.log(this);
+  if (Object.hasOwn(this, 'readState')) {
+    this.readState = newState;
+  }
+};
+
+console.log(Book.prototype);
+
 const createNewBook = function (bookMeta) {
   const newBook = new Book(bookMeta);
+  console.log(newBook);
   myLibrary.push(newBook);
   return newBook;
 };
