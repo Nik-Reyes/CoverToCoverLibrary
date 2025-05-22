@@ -52,7 +52,7 @@ window.addEventListener('DOMContentLoaded', () => {
 
   let previousButton = '';
   document.addEventListener('click', (e) => {
-    const clickedButton = e.target.closest('.btn.read-opt');
+    const clickedButton = e.target.closest('.btn.read-state');
     const shelfMenus = document.querySelectorAll('.shelf-menu');
 
     // close all shelf menus
@@ -81,18 +81,18 @@ window.addEventListener('DOMContentLoaded', () => {
   });
 
   document.addEventListener('click', (e) => {
-    const shelfButton = e.target.closest('.read, .w-t-r, .current-read');
-    if (shelfButton) {
-      e.stopPropagation();
-      const parentButton = shelfButton.closest('.btn.read-opt');
+    e.stopPropagation();
+    if (e.target.closest('.read, .w-t-r, .current-read')) {
+      const parentButton = e.target.closest('.btn.read-state');
       const parentButtonText = parentButton.querySelector('.button-text');
-      parentButtonText.innerText = shelfButton.innerText;
-      const shelfMenu = shelfButton.closest('.shelf-menu');
+      parentButtonText.innerText = e.target.innerText;
+      const shelfMenu = e.target.closest('.shelf-menu');
       shelfMenu.style.display = 'none';
     }
   });
 
   document.addEventListener('click', (e) => {
+    e.stopPropagation();
     if (e.target.closest('.delete-button img')) {
       const currentBook = e.target.closest('.book');
       const currentBookID = parseInt(currentBook.dataset.id);
@@ -313,7 +313,7 @@ const createBookMetaElement = function (book) {
 
 const createReadingStateButton = function () {
   const button = document.createElement('div');
-  button.classList.add('btn', 'read-opt');
+  button.classList.add('btn', 'read-state');
 
   const buttonSpan = document.createElement('span');
   buttonSpan.className = 'button-text';

@@ -164,7 +164,7 @@ label > span {
     hue-rotate(358deg) brightness(117%) contrast(121%);
 }
 
-.btn.read-opt {
+.btn.read-state {
   flex: 1;
   border: 1px solid grey;
   padding: 0.2rem 0;
