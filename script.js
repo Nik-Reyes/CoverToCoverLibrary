@@ -4,6 +4,7 @@ const imageHandler = createImageHandler();
 // make the image.width/height that of the default image in case none is uploaded
 window.addEventListener('DOMContentLoaded', () => {
   const form = document.querySelector('#book-form');
+  form.reset();
   const imgElement = document.querySelector('#image');
   const showFormButton = document.querySelector('.show-form');
   showFormButton.addEventListener('click', showForm);
@@ -12,7 +13,7 @@ window.addEventListener('DOMContentLoaded', () => {
     e.preventDefault();
     const bookMeta = getBookMetaObject(e.target);
     const cleanedBook = cleanInput(bookMeta);
-    const finalBookData = processImageData(cleanedBook);
+    const finalBookData = assignBookCover(cleanedBook);
     const newBook = createNewBook(finalBookData);
     displayBooks();
     reset(e.target);
@@ -106,31 +107,77 @@ window.addEventListener('DOMContentLoaded', () => {
 });
 
 function createImageHandler() {
-  let imageData = null;
+  let imageURL = null;
+  let fileValidity = false;
   const defaultImagePath = 'assets/images/defaultCover.jpg';
 
   return {
     handleFileChange: function (e) {
       const file = e.target.files[0];
-      if (file.type.startsWith('image/') === false) return;
+      imageHandler.setFileValidity(file);
+      const element = this;
+
+      if (document.querySelector('.message')) {
+        document.querySelector('.message').remove();
+      }
+
+      if (!imageHandler.getFileValidity()) {
+        showMessage(
+          element,
+          'Unsupported file type. Supported file types: .jpg, .jpeg, .webp, .png',
+          'error',
+        );
+        element.value = ''; //clear value when false so submit does not submit file
+        return;
+      }
 
       const reader = new FileReader();
       reader.readAsDataURL(file); //encode in base 64 (string)
       // when the FileReader encodes the file, reader.onload runs
       reader.onloadend = () => {
-        imageData = reader.result;
+        imageURL = reader.result;
+      };
+      reader.onerror = () => {
+        showMessage(
+          element,
+          'Error: unable to upload file. Please try again',
+          'error',
+        );
       };
     },
-    getImageData: function () {
-      return imageData;
+    getImageURL: function () {
+      return imageURL;
     },
     getDefaultImagePath: function () {
       return defaultImagePath;
     },
-    resetImgData: function () {
-      imageData = null;
+    resetImgURL: function () {
+      imageURL = null;
+    },
+    getFileValidity: function () {
+      return fileValidity;
+    },
+    setFileValidity: function (file) {
+      const validfFileTypes = ['jpg', 'jpeg', 'webp', 'png'];
+      const fileType = file.type;
+      if (validfFileTypes.some((type) => fileType.endsWith(type))) {
+        fileValidity = true;
+      }
     },
   };
+}
+
+function showMessage(element, message, type) {
+  const messageBlock = document.createElement('div');
+  messageBlock.className = 'message';
+  const messageBlockSpan = document.createElement('span');
+  messageBlockSpan.innerText = message;
+  if (type === 'error') {
+    messageBlockSpan.style.color = 'red';
+    messageBlock.classList.add('error-message');
+  }
+  messageBlock.appendChild(messageBlockSpan);
+  element.after(messageBlock);
 }
 
 function showForm() {
@@ -138,22 +185,19 @@ function showForm() {
   form.classList.remove('hide');
 }
 
-function processImageData(obj) {
-  if (!imageHandler.getImageData()) {
+function assignBookCover(obj) {
+  if (!imageHandler.getImageURL()) {
     obj.image = imageHandler.getDefaultImagePath();
     return obj;
   }
-  if (imageHandler.getImageData()) {
-    obj.image = imageHandler.getImageData();
+  if (imageHandler.getImageURL()) {
+    obj.image = imageHandler.getImageURL();
   }
   return obj;
 }
 
 const getBookMetaObject = function (form) {
-  // FormData returns an iterable object of key value pairs (name attribute of input is the key, the input value is the value)
   const formData = new FormData(form);
-
-  // Object.fromEntries transforms the FormData iterable into an object of key value pairs
   return Object.fromEntries(formData);
 };
 
@@ -198,7 +242,7 @@ const createBookElement = function (book) {
 
   const bookCoverWrapper = createBookCover(book);
   const bookMetaElement = createBookMetaElement(book);
-  const bookButton = createBookReadStateButton(book);
+  const bookButton = createReadingStateButton(book);
   const editButton = createEditButton(book);
   const deleteButton = createDeleteButton();
 
@@ -268,7 +312,7 @@ const createBookMetaElement = function (book) {
   return bookMetaElement;
 };
 
-const createBookReadStateButton = function () {
+const createReadingStateButton = function () {
   const button = document.createElement('div');
   button.classList.add('btn', 'read-opt');
 
@@ -309,7 +353,6 @@ const createDeleteButton = function () {
   return deleteButton;
 };
 
-// clearing all child elements to refresh cards
 function displayBooks() {
   const bookCollection = document.querySelector('.book-collection');
   deleteChildElements(bookCollection);
@@ -320,7 +363,7 @@ function displayBooks() {
 }
 
 function reset(form) {
-  if (imageHandler.getImageData()) imageHandler.resetImgData();
+  if (imageHandler.getImageURL()) imageHandler.resetImgURL();
   form.reset();
   form.classList.add('hide');
 }
