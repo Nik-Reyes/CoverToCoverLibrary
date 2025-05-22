@@ -83,11 +83,13 @@ window.addEventListener('DOMContentLoaded', () => {
   document.addEventListener('click', (e) => {
     e.stopPropagation();
     if (e.target.closest('.read, .w-t-r, .current-read')) {
-      const parentButton = e.target.closest('.btn.read-state');
-      const parentButtonText = parentButton.querySelector('.button-text');
-      parentButtonText.innerText = e.target.innerText;
-      const shelfMenu = e.target.closest('.shelf-menu');
-      shelfMenu.style.display = 'none';
+      if (bookExists(e.target.closest('.book')).result) {
+        const parentButton = e.target.closest('.btn.read-state');
+        const parentButtonText = parentButton.querySelector('.button-text');
+        parentButtonText.innerText = e.target.innerText;
+        const shelfMenu = e.target.closest('.shelf-menu');
+        shelfMenu.style.display = 'none';
+      }
     }
   });
 
@@ -95,15 +97,26 @@ window.addEventListener('DOMContentLoaded', () => {
     e.stopPropagation();
     if (e.target.closest('.delete-button img')) {
       const currentBook = e.target.closest('.book');
-      const currentBookID = parseInt(currentBook.dataset.id);
-      const idx = myLibrary.findIndex((book) => book.ID === currentBookID);
-      if (idx !== -1) {
-        myLibrary.splice(idx, 1);
+      const bookCheck = bookExists(currentBook);
+      if (bookCheck.result) {
+        myLibrary.splice(bookCheck.bookIndex, 1);
         currentBook.remove();
       }
     }
   });
 });
+
+function bookExists(element) {
+  const elementID = parseInt(element.dataset.id);
+  if (!elementID) {
+    throw Error('Element has no dataset attribute');
+  }
+  const index = myLibrary.findIndex((book) => book.ID === elementID);
+  if (index === -1) {
+    return { result: false, bookIndex: index };
+  }
+  return { result: true, bookIndex: index };
+}
 
 function createImageHandler() {
   let imageURL = null;
@@ -197,6 +210,7 @@ function assignBookCover(obj) {
 
 const getBookMetaObject = function (form) {
   const formData = new FormData(form);
+  console.log(formData);
   return Object.fromEntries(formData);
 };
 
@@ -219,6 +233,7 @@ const Book = function (bookMeta) {
   this.image = bookMeta.image;
   this.imageWidth = bookMeta.imageWidth || 420;
   this.imageHeight = bookMeta.imageHeight || 650;
+  this.readState = bookMeta.readState || 'Want to read';
   this.ID = Date.now() + Math.floor(Math.random() * 1000);
 };
 
