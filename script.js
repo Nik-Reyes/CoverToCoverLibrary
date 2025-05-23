@@ -86,8 +86,6 @@ window.addEventListener('DOMContentLoaded', () => {
       const currentBook = e.target.closest('.book');
       const bookCheck = bookExists(currentBook);
       if (bookCheck.result) {
-        console.log('hi');
-
         const newState = e.target.innerText;
         myLibrary[bookCheck.bookIndex].setReadState(newState);
         const parentButton = e.target.closest('.btn.read-state');
@@ -216,7 +214,6 @@ function assignBookCover(obj) {
 
 const getBookMetaObject = function (form) {
   const formData = new FormData(form);
-  console.log(formData);
   return Object.fromEntries(formData);
 };
 
@@ -244,17 +241,13 @@ const Book = function (bookMeta) {
 };
 
 Book.prototype.setReadState = function (newState) {
-  console.log(this);
   if (Object.hasOwn(this, 'readState')) {
     this.readState = newState;
   }
 };
 
-console.log(Book.prototype);
-
 const createNewBook = function (bookMeta) {
   const newBook = new Book(bookMeta);
-  console.log(newBook);
   myLibrary.push(newBook);
   return newBook;
 };

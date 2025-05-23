@@ -8,13 +8,36 @@
   </head>
   <body>
     <div class="page-wrapper">
-      <div class="header"><h1>Header</h1></div>
+      <div class="header">
+        <p class="title">CoverToCover</p>
+        <div class="form-control searchbar">
+          <input type="search" name="search" id="search" placeholder="Search" />
+        </div>
+        <div class="profile">
+          <img
+            src="assets/svgs/profile.svg"
+            alt="profile icon"
+            width="32"
+            height="32"
+          />
+        </div>
+      </div>
       <nav class="nav">
         <span>Your Books</span>
-        <button class="show-form">Add Book</button>
+        <button class="show-form">
+          <img
+            src="assets/svgs/add.svg"
+            alt="add a book"
+            width="800"
+            height="800"
+            class="add-book-icon"
+          />
+          Add Book
+        </button>
       </nav>
       <form action="https://example.com" id="book-form" class="form hide">
         <fieldset class="field">
+          <legend><p>Fill out your book information</p></legend>
           <div class="form-control">
             <label for="title">
               <span class="title">Title:</span>
