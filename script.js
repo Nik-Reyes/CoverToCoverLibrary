@@ -1,16 +1,31 @@
 const myLibrary = [];
 const imageHandler = createImageHandler();
 
-// make the image.width/height that of the default image in case none is uploaded
 window.addEventListener('DOMContentLoaded', () => {
   const form = document.querySelector('#book-form');
   form.reset();
-  const imgElement = document.querySelector('#image');
-  const showFormButton = document.querySelector('.show-form');
-  showFormButton.addEventListener('click', showForm);
-  imgElement.addEventListener('change', imageHandler.handleFileChange);
+
+  const openDialog = document.querySelector('.open-dialog');
+  const closeButton = document.querySelector('.close-button');
+  const dialog = document.querySelector('#book-form-dialog');
+  openDialog.addEventListener('click', () => dialog.showModal());
+  closeButton.addEventListener('click', (e) => {
+    if (e.target.closest('.close-button')) {
+      closeDialog(dialog, form);
+    }
+  });
+  dialog.addEventListener('click', (e) => {
+    if (e.target.tagName === 'DIALOG') {
+      closeDialog(dialog, form);
+    }
+  });
+
+  const fileInput = document.querySelector('#file-input');
+  fileInput.addEventListener('change', imageHandler.handleFileChange);
+
   form.addEventListener('submit', (e) => {
     e.preventDefault();
+    closeDialog(dialog);
     const bookMeta = getBookMetaObject(e.target);
     const cleanedBook = cleanInput(bookMeta);
     const finalBookData = assignBookCover(cleanedBook);
@@ -110,6 +125,19 @@ window.addEventListener('DOMContentLoaded', () => {
   });
 });
 
+function closeDialog(dialog, form) {
+  dialog.setAttribute('termination', '');
+  dialog.addEventListener(
+    'animationend',
+    () => {
+      dialog.removeAttribute('termination');
+      dialog.close();
+      reset(form);
+    },
+    { once: true },
+  );
+}
+
 function bookExists(element) {
   const elementID = parseInt(element.dataset.id);
   if (!elementID) {
@@ -194,11 +222,6 @@ function showMessage(element, message, type) {
   }
   messageBlock.appendChild(messageBlockSpan);
   element.after(messageBlock);
-}
-
-function showForm() {
-  const form = document.querySelector('#book-form');
-  form.classList.remove('hide');
 }
 
 function assignBookCover(obj) {
@@ -388,5 +411,4 @@ function displayBooks() {
 function reset(form) {
   if (imageHandler.getImageURL()) imageHandler.resetImgURL();
   form.reset();
-  form.classList.add('hide');
 }

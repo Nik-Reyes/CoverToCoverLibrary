@@ -1,4 +1,6 @@
-* {
+*,
+*::after,
+*::before {
   margin: 0;
   padding: 0;
   box-sizing: border-box;
@@ -17,22 +19,96 @@ img {
   font-style: italic;
 }
 
-form {
-  position: absolute;
-  inset: 0;
+button,
+.book,
+.dialog-content input#file-input,
+::file-selector-button,
+.profile img {
+  cursor: pointer;
+}
+
+dialog {
+  margin: auto;
+  box-shadow: 0 0 0 100vw rgba(0, 0, 0, 0.5);
+  border-radius: 1rem;
+  border: none;
+  box-shadow: 0 0 5px 2px #0000007b;
+  width: 20rem;
+}
+
+.dialog-content {
+  padding: 2rem;
+}
+
+dialog[open] {
+  animation: spawnDialog 500ms forwards;
+}
+
+dialog[termination] {
+  display: block;
+  animation: terminateDialog 300ms forwards;
+}
+
+@keyframes spawnDialog {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+@keyframes terminateDialog {
+  from {
+    opacity: 1;
+  }
+  to {
+    opacity: 0;
+  }
+}
+
+.form {
+  display: grid;
+  gap: 2rem;
+}
+
+.form-heading-wrapper {
+  display: flex;
+  gap: 0.5rem;
+  padding: 2rem 2rem 0px;
+}
+
+.form-header {
+  font-weight: 600;
+  font-size: 1.125rem;
+}
+
+.close-button {
+  margin-left: auto;
+  width: 24px;
+  height: 24px;
+  border-radius: 0.25rem;
   display: flex;
   justify-content: center;
   align-items: center;
-  background-color: #ebe8d8;
-  z-index: 200;
-}
-
-.hide {
-  display: none;
-}
-
-fieldset {
   border: none;
+  background-color: transparent;
+  transition: background-color 200ms ease-in-out;
+}
+
+.close-button:hover {
+  background-color: rgba(255, 0, 0, 0.32);
+}
+.close-icon {
+  width: inherit;
+}
+
+.bar:first-child {
+  transform: rotate(45deg) translateY(3px) translateX(5px);
+  background-color: green;
+}
+.bar:last-child {
+  transform: rotate(-45deg) translateY(-6px);
 }
 
 .page-wrapper {
@@ -42,7 +118,6 @@ fieldset {
     'nav'
     'library';
   grid-template-rows: repeat(3, auto);
-  gap: 2rem;
 }
 
 .header {
@@ -52,7 +127,7 @@ fieldset {
   gap: 1rem;
   grid-area: header;
   padding: 0.75rem 1rem;
-  box-shadow: 0 1px 5px #4f4a38;
+  box-shadow: 0 1px 4px #4f4a3871;
 }
 
 .title {
@@ -64,65 +139,73 @@ fieldset {
   width: min(100%, 500px);
 }
 
-input[type='search'] {
+input {
+  direction: ltr;
+}
+
+input,
+dialog button {
   padding: 0.5rem;
   width: 100%;
   border-radius: 0.3rem;
   border: 1px solid grey;
 }
 
+dialog label span {
+  padding-bottom: 0.5rem;
+  font-weight: 500;
+}
+
+button.add-book {
+  background-color: rgb(165, 203, 194);
+  color: rgb(5, 50, 33);
+}
+
 .profile {
-  min-width: 24px;
-  width: 32px;
-}
-
-.profile img {
-  cursor: pointer;
-}
-
-.nav,
-.library {
-  padding: 0px 2rem;
+  flex-shrink: 0;
+  width: 30px;
 }
 
 .nav {
-  display: flex;
   grid-area: nav;
+  border-bottom: 1px solid #cfc8aa;
+  padding: 0.5rem 2rem;
+}
+
+.nav-content-wrapper {
+  display: flex;
   justify-content: space-between;
   align-items: center;
 }
 
-.nav > span {
+.nav span {
   font-weight: 500;
   color: rgb(5, 50, 33);
-  font-size: 1.125rem;
 }
 
 .nav .add-book-icon {
-  max-width: 20px;
+  width: 20px;
 }
 
-.nav > button {
+.nav button {
   background-color: transparent;
   display: flex;
   align-items: center;
   border: none;
   color: rgb(5, 50, 33);
-  font-size: 1rem;
   padding: 0.5rem 1rem;
   border-radius: 1rem;
   transition: background-color 200ms ease-in-out;
-  cursor: pointer;
 }
 
-.nav > button:hover {
+.nav button:hover {
   background-color: rgb(165, 203, 194);
 }
 
 .library {
   display: grid;
   grid-area: library;
-  padding-bottom: 5rem;
+  padding: 1.5rem 2rem 5rem;
 }
 
 .book-collection {
@@ -139,7 +222,7 @@ input[type='search'] {
   gap: 1rem;
   padding: 0.75rem;
   border-radius: 1rem;
-  box-shadow: 0 0 5px rgb(166, 166, 166);
+  box-shadow: 0 0 5px rgba(166, 166, 166, 0.525);
   background-color: rgb(235, 235, 235);
   position: relative;
 }
@@ -159,7 +242,6 @@ input[type='search'] {
   width: 3rem;
   border-left: var(--border);
   border-bottom: var(--border);
-  cursor: pointer;
 }
 
 .book-edit:hover span {
@@ -192,6 +274,11 @@ label > span {
   color: rgb(24, 24, 24);
 }
 
+span[aria-required='true'] {
+  font-size: 1.1rem;
+  color: rgb(202, 0, 0);
+}
+
 .right-column {
   display: flex;
   flex-direction: column;
@@ -208,7 +295,6 @@ label > span {
   height: auto;
   border: none;
   background: transparent;
-  cursor: pointer;
 }
 
 .delete-button:hover img {
@@ -221,7 +307,6 @@ label > span {
   border: 1px solid grey;
   padding: 0.2rem 0;
   border-radius: 0.6rem;
-  cursor: pointer;
   text-align: center;
   position: relative;
 }
@@ -255,6 +340,7 @@ label > span {
   border-top-left-radius: inherit;
   border-top-right-radius: inherit;
 }
+
 .shelf-menu > button:last-child {
   border-bottom-left-radius: inherit;
   border-bottom-right-radius: inherit;

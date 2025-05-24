@@ -23,24 +23,45 @@
         </div>
       </div>
       <nav class="nav">
-        <span>Your Books</span>
-        <button class="show-form">
+        <div class="nav-content-wrapper">
+          <span>Your Books</span>
+          <button class="open-dialog">
+            <img
+              src="assets/svgs/add.svg"
+              alt="add a book"
+              width="800"
+              height="800"
+              class="add-book-icon"
+            />
+            Add Book
+          </button>
+        </div>
+      </nav>
+      <main class="library">
+        <section class="book-collection"></section>
+      </main>
+    </div>
+    <dialog id="book-form-dialog">
+      <div class="form-heading-wrapper">
+        <p class="form-header">Add to your Library</p>
+        <button class="close-button">
           <img
-            src="assets/svgs/add.svg"
-            alt="add a book"
+            src="assets/svgs/close.svg"
+            alt="close dialog"
             width="800"
             height="800"
-            class="add-book-icon"
+            class="close-icon"
           />
-          Add Book
         </button>
-      </nav>
-      <form action="https://example.com" id="book-form" class="form hide">
-        <fieldset class="field">
-          <legend><p>Fill out your book information</p></legend>
+      </div>
+      <div class="dialog-content">
+        <form method="dialog" id="book-form" class="form">
           <div class="form-control">
             <label for="title">
-              <span class="title">Title:</span>
+              <span>
+                Title
+                <span aria-required="true">*</span>
+              </span>
               <input
                 type="text"
                 name="title"
@@ -52,7 +73,10 @@
           </div>
           <div class="form-control">
             <label for="author">
-              <span class="author">Author:</span>
+              <span class="author">
+                Author
+                <span aria-required="true">*</span>
+              </span>
               <input
                 type="text"
                 name="author"
@@ -64,31 +88,26 @@
           </div>
           <div class="form-control">
             <label for="pages">
-              <span class="pages">Page Count:</span>
+              <span class="pages">Page Count</span>
               <input type="text" name="pages" id="pages" placeholder="" />
             </label>
           </div>
           <div class="form-control">
-            <label for="image">
-              <span class="image">Upload Image:</span>
+            <label for="file-input">
+              <span class="image">Upload Image</span>
               <input
                 type="file"
                 name="image"
-                id="image"
+                id="file-input"
                 accept="image/png, image/jpg, image/jpeg, image/webp"
                 placeholder=""
               />
             </label>
           </div>
-          <button type="submit" form="book-form" class="add-book">
-            Add Book
-          </button>
-        </fieldset>
-      </form>
-      <main class="library">
-        <section class="book-collection"></section>
-      </main>
-    </div>
+          <button type="submit" class="add-book">Add Book</button>
+        </form>
+      </div>
+    </dialog>
     <script src="script.js"></script>
   </body>
 </html>
