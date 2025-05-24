@@ -25,13 +25,12 @@ window.addEventListener('DOMContentLoaded', () => {
 
   form.addEventListener('submit', (e) => {
     e.preventDefault();
-    closeDialog(dialog);
+    closeDialog(dialog, form);
     const bookMeta = getBookMetaObject(e.target);
     const cleanedBook = cleanInput(bookMeta);
     const finalBookData = assignBookCover(cleanedBook);
     const newBook = createNewBook(finalBookData);
     displayBooks();
-    reset(e.target);
   });
 
   [
