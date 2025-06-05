@@ -29,7 +29,7 @@ window.addEventListener('DOMContentLoaded', () => {
     const bookMeta = getBookMetaObject(e.target);
     const cleanedBook = cleanInput(bookMeta);
     const finalBookData = assignBookCover(cleanedBook);
-    const newBook = createNewBook(finalBookData);
+    createNewBook(finalBookData);
     displayBooks();
   });
 
@@ -96,19 +96,24 @@ window.addEventListener('DOMContentLoaded', () => {
 
   document.addEventListener('click', (e) => {
     e.stopPropagation();
-    if (e.target.closest('.read, .w-t-r, .current-read')) {
-      const currentBook = e.target.closest('.book');
-      const bookCheck = bookExists(currentBook);
-      if (bookCheck.result) {
-        const newState = e.target.innerText;
-        myLibrary[bookCheck.bookIndex].setReadState(newState);
-        const parentButton = e.target.closest('.btn.read-state');
-        const previousState = parentButton.querySelector('.button-text');
-        previousState.innerText = newState;
-        const shelfMenu = e.target.closest('.shelf-menu');
-        shelfMenu.style.display = 'none';
-      }
+    if (!e.target.closest('.read, .w-t-r, .current-read')) {
+      return;
     }
+    const currentBook = e.target.closest('.book');
+    const bookCheck = bookExists(currentBook);
+    if (!bookCheck.result) return;
+
+    // Get the state the user-selected state
+    const selectedState = e.target.innerText;
+    // Set the readsatte of the data object to user-selected state
+    myLibrary[bookCheck.bookIndex].readState = selectedState;
+    // Change the dropdown button state preview to user-selected state
+    const parentButton = e.target.closest('.btn.read-state');
+    const stateSpan = parentButton.querySelector('.button-text');
+    stateSpan.innerText = selectedState;
+    // Close the state shelf menu
+    const shelfMenu = e.target.closest('.shelf-menu');
+    shelfMenu.style.display = 'none';
   });
 
   document.addEventListener('click', (e) => {
@@ -138,11 +143,12 @@ function closeDialog(dialog, form) {
 }
 
 function bookExists(element) {
+  console.log(element);
   const elementID = parseInt(element.dataset.id);
   if (!elementID) {
     throw Error('Element has no dataset attribute');
   }
-  const index = myLibrary.findIndex((book) => book.ID === elementID);
+  const index = myLibrary.findIndex((book) => book.id === elementID);
   if (index === -1) {
     return { result: false, bookIndex: index };
   }
@@ -248,25 +254,57 @@ const cleanInput = function (obj) {
   );
 };
 
-const Book = function (bookMeta) {
-  if (!new.target) {
-    throw Error("Cannot use constructor without the 'new' keyword");
-  }
-  this.title = bookMeta.title;
-  this.author = bookMeta.author;
-  this.pages = parseInt(bookMeta.pages) || '';
-  this.image = bookMeta.image;
-  this.imageWidth = bookMeta.imageWidth || 420;
-  this.imageHeight = bookMeta.imageHeight || 650;
-  this.readState = bookMeta.readState || 'Want to read';
-  this.ID = Date.now() + Math.floor(Math.random() * 1000);
-};
+class Book {
+  #title;
+  #author;
+  #pages;
+  #image;
+  #imageWidth;
+  #imageHeight;
+  #readState;
 
-Book.prototype.setReadState = function (newState) {
-  if (Object.hasOwn(this, 'readState')) {
-    this.readState = newState;
+  constructor(bookMeta) {
+    this.#title = bookMeta.title;
+    this.#author = bookMeta.author;
+    this.#pages = parseInt(bookMeta.pages) || '';
+    this.#image = bookMeta.image;
+    this.#imageWidth = bookMeta.imageWidth || 420;
+    this.#imageHeight = bookMeta.imageHeight || 650;
+    this.#readState = bookMeta.readState || 'Want to read';
   }
-};
+
+  //Public instance fields
+  #id = Date.now() + Math.floor(Math.random() * 1000);
+
+  //public instance getter/setter fields
+  get title() {
+    return this.#title;
+  }
+  get author() {
+    return this.#author;
+  }
+  get pages() {
+    return this.#pages;
+  }
+  get image() {
+    return this.#image;
+  }
+  get imageWidth() {
+    return this.#imageWidth;
+  }
+  get imageHeight() {
+    return this.#imageHeight;
+  }
+  get readState() {
+    return this.#readState;
+  }
+  get id() {
+    return this.#id;
+  }
+  set readState(newState) {
+    this.#readState = newState;
+  }
+}
 
 const createNewBook = function (bookMeta) {
   const newBook = new Book(bookMeta);
@@ -282,7 +320,7 @@ function deleteChildElements(parent) {
 
 const createBookElement = function (book) {
   const bookElement = document.createElement('div');
-  bookElement.dataset.id = book.ID;
+  bookElement.dataset.id = book.id;
   bookElement.className = 'book';
 
   const bookCoverWrapper = createBookCover(book);
@@ -329,33 +367,22 @@ const createBookCover = function (book) {
 const createBookMetaElement = function (book) {
   const bookMetaElement = document.createElement('div');
   bookMetaElement.className = 'book-meta';
-
-  const bookMetaChildTitle = document.createElement('div');
-  bookMetaChildTitle.className = 'title';
-  const bookSpanTitle = document.createElement('span');
-  bookSpanTitle.innerText = book.title;
-  bookMetaChildTitle.appendChild(bookSpanTitle);
-
-  const bookMetaChildAuthor = document.createElement('div');
-  bookMetaChildAuthor.className = 'author';
-  const bookSpanAuthor = document.createElement('span');
-  bookSpanAuthor.innerText = `by ${book.author}`;
-  bookMetaChildAuthor.appendChild(bookSpanAuthor);
-
-  const bookMetaChildPages = document.createElement('div');
-  bookMetaChildPages.className = 'pages';
-  const bookSpanPages = document.createElement('span');
-  bookSpanPages.innerText = !book.pages ? '' : `pages ${book.pages}`;
-  bookMetaChildPages.appendChild(bookSpanPages);
-
   bookMetaElement.append(
-    bookMetaChildTitle,
-    bookMetaChildAuthor,
-    bookMetaChildPages,
+    createMetaDiv('title', book.title),
+    createMetaDiv('author', book.author),
+    createMetaDiv('pages', book.pages),
   );
-
   return bookMetaElement;
 };
+
+function createMetaDiv(cssClass, str) {
+  const parent = document.createElement('div');
+  parent.className = cssClass;
+  const span = document.createElement('span');
+  span.innerText = str;
+  parent.appendChild(span);
+  return parent;
+}
 
 const createReadingStateButton = function () {
   const button = document.createElement('div');
@@ -370,21 +397,22 @@ const createReadingStateButton = function () {
   buttonMenu.className = 'shelf-menu';
   buttonMenu.style.display = 'none';
 
-  const readShelf = document.createElement('button');
-  readShelf.className = 'read';
-  readShelf.innerText = 'Read';
-  const wantToReadShelf = document.createElement('button');
-  wantToReadShelf.className = 'w-t-r';
-  wantToReadShelf.innerText = 'Want to read';
-  const currentReadShelf = document.createElement('button');
-  currentReadShelf.className = 'current-read';
-  currentReadShelf.innerText = 'Currently reading';
-
-  buttonMenu.append(readShelf, wantToReadShelf, currentReadShelf);
+  buttonMenu.append(
+    createShelfButton('read', 'Read'),
+    createShelfButton('w-t-r', 'Want to read'),
+    createShelfButton('current-read', 'Currently Reading'),
+  );
   button.appendChild(buttonMenu);
 
   return button;
 };
+
+function createShelfButton(cssClass, shelfName) {
+  const button = document.createElement('button');
+  button.className = cssClass;
+  button.innerText = shelfName;
+  return button;
+}
 
 const createDeleteButton = function () {
   const deleteButton = document.createElement('button');
