@@ -169,7 +169,7 @@ button.add-book {
 .nav {
   grid-area: nav;
   border-bottom: 1px solid #cfc8aa;
-  padding: 0.5rem 2rem;
+  padding: 0.75rem 1rem;
 }
 
 .nav-content-wrapper {
@@ -347,9 +347,6 @@ span[aria-required='true'] {
 }
 
 @media only screen and (min-width: 49.375rem) {
-  .header {
-    padding: 0.75rem 3rem;
-  }
   input[type='search'] {
     padding: 0.5rem 1rem;
   }
