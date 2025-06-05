@@ -187,19 +187,38 @@ button.add-book {
   width: 20px;
 }
 
-.nav button {
-  background-color: transparent;
+.open-dialog {
   display: flex;
   align-items: center;
   border: none;
   color: rgb(5, 50, 33);
+  background-color: hsl(166, 27%, 70%);
   padding: 0.5rem 1rem;
   border-radius: 1rem;
   transition: background-color 200ms ease-in-out;
+  position: relative;
+  z-index: 1;
+  overflow: hidden;
 }
 
-.nav button:hover {
-  background-color: rgb(165, 203, 194);
+.open-dialog::before {
+  content: '';
+  position: absolute;
+  height: 100%;
+  width: 100%;
+  background-color: hsl(166, 27%, 60%);
+  left: 0;
+  top: 0;
+  border-radius: inherit;
+  z-index: -1;
+  transform: scaleX(0);
+  transform-origin: right;
+  transition: transform 200ms ease-in-out;
+}
+
+.open-dialog:hover::before {
+  transform-origin: left;
+  transform: scaleX(1);
 }
 
 .library {
