@@ -168,7 +168,7 @@ button.add-book {
 
 .nav {
   grid-area: nav;
-  border-bottom: 1px solid #cfc8aa;
+  border-bottom: 1px solid hsl(51, 32%, 85%);
   padding: 0.75rem 1rem;
 }
 
